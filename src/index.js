@@ -48,12 +48,15 @@ const getMaticFaucet = async (order) => {
       '#app > div > div > div.index > div > div > div:nth-child(1) > div > div.section.position-absolute > div.modal.show > div > div > div:nth-child(2) > div.ps-t-12 > div > button'
     await page.click(promptConfirmBtnSelector)
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 20; i++) {
       await delay(2000)
       const balance = await provider.getBalance(address)
       console.log(`Checking token balance ${i}: ${balance.toString()}`)
       if (balance.gt(0)) {
         break
+      }
+      if (i === 19) {
+        throw new Error()
       }
     }
     console.log('Sending token', i)
@@ -65,6 +68,7 @@ const getMaticFaucet = async (order) => {
     console.log('Sent token', i)
   } catch (error) {
     console.log(`Failed to get faucet for: ${error}`, i)
+    throw error
   } finally {
     console.log(`Mint end`, i)
     await page.deleteCookie()
@@ -88,5 +92,5 @@ const getMaticFaucets = async () => {
   console.log(`<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<`)
 }
 
-// getMaticFaucet()
-getMaticFaucets()
+getMaticFaucet()
+// getMaticFaucets()
